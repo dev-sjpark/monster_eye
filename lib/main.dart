@@ -46,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Padding(
           padding: const EdgeInsets.all(0),
           child: GestureDetector(
-            // onPanDown: (detail) => sketch?.addCircle(detail.localPosition),
             onPanUpdate: (detail) => sketch?.addCircle(detail.localPosition),
             child: LayoutBuilder(
               builder: (context, box) {

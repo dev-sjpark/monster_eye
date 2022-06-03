@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_processing/flutter_processing.dart';
-import 'dart:developer';
 
 class MySketch extends Sketch {
 
