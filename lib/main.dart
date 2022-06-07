@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_processing/flutter_processing.dart';
 import 'dart:developer';
-
 import 'my_sketch.dart';
 
 void main() {
@@ -41,21 +40,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: GestureDetector(
-            onPanUpdate: (detail) => sketch?.addCircle(detail.localPosition),
-            child: LayoutBuilder(
-              builder: (context, box) {
-                sketch = MySketch(maxSize: box.biggest);
-                return Processing(
-                  sketch: sketch!,
-                );
-              }
-            ),
-          ),
+      backgroundColor: const Color(0xFF222222),
+      body: GestureDetector(
+        onPanUpdate: (detail) => sketch?.addCircle(detail.localPosition),
+        onDoubleTap: () => sketch?.startDrawMouth(),
+        child: LayoutBuilder(
+          builder: (context, box) {
+            sketch = MySketch(maxSize: box.biggest);
+            return Processing(
+              sketch: sketch!,
+            );
+          }
         ),
       ),
     );

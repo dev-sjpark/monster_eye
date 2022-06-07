@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_processing/flutter_processing.dart';
 
+import 'dart:developer';
+
+import 'drawing_object/circle.dart';
+import 'drawing_object/mouth.dart';
+
 class MySketch extends Sketch {
 
   MySketch({required this.maxSize});
@@ -15,6 +20,8 @@ class MySketch extends Sketch {
 
   final _registerPointThreshold = 10.0;
 
+  Mouth? _mouth;
+
   @override
   Future<void> setup() async {
     size(
@@ -24,6 +31,9 @@ class MySketch extends Sketch {
   }
 
   void addCircle(Offset point) {
+    if (_mouth != null) {
+      return;
+    }
     point = point.translate(random(-10, 10), random(-10, 10));
     if (currentPoint == null ||
         (currentPoint! - point).distance > _registerPointThreshold) {
@@ -33,11 +43,23 @@ class MySketch extends Sketch {
     }
   }
 
+  void startDrawMouth() {
+    if (_mouth != null) {
+      _mouth = null;
+    } else {
+      _mouth = Mouth(boundary: maxSize);
+    }
+  }
+
   @override
   Future<void> draw() async {
-    background(color: Colors.black);
+    background(color: const Color(0xFF222222));
     _drawCircle();
     _drawEye();
+
+    _mouth
+      ?..transform()
+      ..draw(this);
   }
 
   void _drawEye() {
@@ -83,57 +105,12 @@ class MySketch extends Sketch {
         continue;
       }
       circle
-        ..transformSize()
+        ..transform()
         ..draw(this);
     }
     for (var i in removeIndex) {
       circles.removeAt(i);
     }
   }
-}
 
-class Circle {
-  Circle({
-    required this.offset,
-    required Size boundary,
-  }) {
-    _setMaxRadius(boundary);
-  }
-
-  void _setMaxRadius(Size boundary) {
-    double bigger = boundary.width;
-    bigger = boundary.height > bigger ? boundary.height : bigger;
-    _maxRadius = bigger * 0.2;
-  }
-
-  final Offset offset;
-
-  double _radius = 3;
-
-  bool _isGrowing = true;
-
-  late final double _maxRadius;
-
-  bool get isExtinction => !_isGrowing && _radius.isNegative;
-
-  void transformSize() {
-    // circle should be max size in 12 frame
-    final amount = _maxRadius / 12;
-    if (_isGrowing) {
-      _radius += amount;
-      if (_radius >= _maxRadius) {
-        _isGrowing = false;
-      }
-    } else {
-      _radius -= (amount / 5);
-    }
-  }
-
-  void draw(Sketch s) {
-    s
-      ..fill(color: Colors.red)
-      ..strokeWeight(1)
-      ..stroke(color: Colors.red)
-      ..circle(center: offset, diameter: _radius);
-  }
 }
